@@ -100,7 +100,7 @@ class FollowController implements Controller {
     next: NextFunction
   ): Promise<void> {
     try {
-      const follows = await this.followService.getAll();
+      const follows = await this.followService.getAll(req);
 
       res.status(200).json({
         message: "success",
@@ -123,10 +123,7 @@ class FollowController implements Controller {
     let updateBody = req.body;
 
     try {
-      const updatedFollow = await this.followService.updateOne(
-        id,
-        updateBody
-      );
+      const updatedFollow = await this.followService.updateOne(id, updateBody);
 
       res.status(200).json({
         message: "success",

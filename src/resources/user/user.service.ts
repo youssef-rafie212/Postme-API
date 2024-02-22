@@ -4,6 +4,7 @@ import User from "./user.interface";
 import { Request } from "express";
 import Email from "../../utils/email";
 import crypo from "crypto";
+import APIFeatures from "../../utils/api-features";
 
 class UserService {
   private user = UserModel;
@@ -110,9 +111,18 @@ class UserService {
     }
   }
 
-  async getAll(): Promise<User[]> {
+  async getAll(req: Request): Promise<User[]> {
     try {
-      const users = await this.user.find();
+      const query = this.user.find();
+      const queryString = req.query;
+
+      const features = new APIFeatures(query, queryString)
+        .filter()
+        .fields()
+        .paginate()
+        .sort();
+
+      const users: User[] = await features.query;
 
       return users;
     } catch (err: any) {
@@ -132,8 +142,7 @@ class UserService {
     req: Request
   ): Promise<User> {
     // Check for file uploads
-    if (req.cloudinaryUrls)
-      updatedFields.profilePicture = req.cloudinaryUrls;
+    if (req.cloudinaryUrls) updatedFields.profilePicture = req.cloudinaryUrls;
 
     try {
       const user = await this.user.findByIdAndUpdate(userId, updatedFields, {

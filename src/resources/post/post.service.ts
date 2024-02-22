@@ -2,6 +2,7 @@ import PostModel from "./post.model";
 import Post from "./post.interface";
 import UserModel from "../../resources/user/user.model";
 import { Request } from "express";
+import APIFeatures from "../../utils/api-features";
 
 class PostService {
   private post = PostModel;
@@ -35,9 +36,18 @@ class PostService {
     }
   }
 
-  async getAll(): Promise<Post[]> {
+  async getAll(req : Request): Promise<Post[]> {
     try {
-      const posts = await this.post.find();
+      const query = this.post.find();
+      const queryString = req.query;
+
+      const features = new APIFeatures(query, queryString)
+        .filter()
+        .fields()
+        .paginate()
+        .sort();
+
+      const posts: Post[] = await features.query;
 
       return posts;
     } catch (err: any) {

@@ -2,6 +2,8 @@ import CommentLikeModel from "./comment-like.model";
 import CommentLike from "./comment-like.interface";
 import UserModel from "../user/user.model";
 import CommentModel from "../comment/comment.model";
+import { Request } from "express";
+import APIFeatures from "../../utils/api-features";
 
 class CommentLikeService {
   private commentLike = CommentLikeModel;
@@ -36,9 +38,18 @@ class CommentLikeService {
     }
   }
 
-  async getAll(): Promise<CommentLike[]> {
+  async getAll(req: Request): Promise<CommentLike[]> {
     try {
-      const commentLikes = await this.commentLike.find();
+      const query = this.commentLike.find();
+      const queryString = req.query;
+
+      const features = new APIFeatures(query, queryString)
+        .filter()
+        .fields()
+        .paginate()
+        .sort();
+
+      const commentLikes: CommentLike[] = await features.query;
 
       return commentLikes;
     } catch (err: any) {

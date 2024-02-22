@@ -100,7 +100,7 @@ class PostLikeController implements Controller {
     next: NextFunction
   ): Promise<void> {
     try {
-      const postLikes = await this.postLikeService.getAll();
+      const postLikes = await this.postLikeService.getAll(req);
 
       res.status(200).json({
         message: "success",

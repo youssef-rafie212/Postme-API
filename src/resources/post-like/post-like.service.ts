@@ -2,6 +2,8 @@ import PostLikeModel from "./post-like.model";
 import PostLike from "./post-like.interface";
 import UserModel from "../../resources/user/user.model";
 import PostModel from "../../resources/post/post.model";
+import { Request } from "express";
+import APIFeatures from "../../utils/api-features";
 
 class PostLikeService {
   private postLike = PostLikeModel;
@@ -36,9 +38,18 @@ class PostLikeService {
     }
   }
 
-  async getAll(): Promise<PostLike[]> {
+  async getAll(req: Request): Promise<PostLike[]> {
     try {
-      const postLikes = await this.postLike.find();
+      const query = this.postLike.find();
+      const queryString = req.query;
+
+      const features = new APIFeatures(query, queryString)
+        .filter()
+        .fields()
+        .paginate()
+        .sort();
+
+      const postLikes: PostLike[] = await features.query;
 
       return postLikes;
     } catch (err: any) {

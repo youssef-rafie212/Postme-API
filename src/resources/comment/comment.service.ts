@@ -2,6 +2,8 @@ import CommentModel from "./comment.model";
 import Comment from "./comment.interface";
 import UserModel from "../../resources/user/user.model";
 import PostModel from "../../resources/post/post.model";
+import { Request } from "express";
+import APIFeatures from "../../utils/api-features";
 
 class CommentService {
   private comment = CommentModel;
@@ -36,9 +38,18 @@ class CommentService {
     }
   }
 
-  async getAll(): Promise<Comment[]> {
+  async getAll(req: Request): Promise<Comment[]> {
     try {
-      const comments = await this.comment.find();
+      const query = this.comment.find();
+      const queryString = req.query;
+
+      const features = new APIFeatures(query, queryString)
+        .filter()
+        .fields()
+        .paginate()
+        .sort();
+
+      const comments: Comment[] = await features.query;
 
       return comments;
     } catch (err: any) {

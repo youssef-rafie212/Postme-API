@@ -100,7 +100,7 @@ class CommentController implements Controller {
     next: NextFunction
   ): Promise<void> {
     try {
-      const comments = await this.commentService.getAll();
+      const comments = await this.commentService.getAll(req);
 
       res.status(200).json({
         message: "success",

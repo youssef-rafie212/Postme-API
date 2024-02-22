@@ -1,6 +1,8 @@
 import FollowModel from "./follow.model";
 import Follow from "./follow.interface";
 import UserModel from "../user/user.model";
+import { Request } from "express";
+import APIFeatures from "../../utils/api-features";
 
 class FollowService {
   private follow = FollowModel;
@@ -39,9 +41,18 @@ class FollowService {
     }
   }
 
-  async getAll(): Promise<Follow[]> {
+  async getAll(req: Request): Promise<Follow[]> {
     try {
-      const follows = await this.follow.find();
+      const query = this.follow.find();
+      const queryString = req.query;
+
+      const features = new APIFeatures(query, queryString)
+        .filter()
+        .fields()
+        .paginate()
+        .sort();
+
+      const follows: Follow[] = await features.query;
 
       return follows;
     } catch (err: any) {

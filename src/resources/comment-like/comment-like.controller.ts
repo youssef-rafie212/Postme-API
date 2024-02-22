@@ -102,7 +102,7 @@ class CommentLikeController implements Controller {
     next: NextFunction
   ): Promise<void> {
     try {
-      const commentLikes = await this.commentLikeService.getAll();
+      const commentLikes = await this.commentLikeService.getAll(req);
 
       res.status(200).json({
         message: "success",

@@ -260,7 +260,7 @@ class UserController implements Controller {
     next: NextFunction
   ): Promise<void> {
     try {
-      const users = await this.userService.getAll();
+      const users = await this.userService.getAll(req);
 
       res.status(200).json({
         message: "success",

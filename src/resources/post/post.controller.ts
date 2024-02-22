@@ -109,7 +109,7 @@ class PostController implements Controller {
     next: NextFunction
   ): Promise<void> {
     try {
-      const posts = await this.postService.getAll();
+      const posts = await this.postService.getAll(req);
 
       res.status(200).json({
         message: "success",
