@@ -15,10 +15,13 @@ const validationMiddleware = (schema: Joi.Schema): RequestHandler => {
 
     try {
       const value = await schema.validateAsync(req.body, options);
-      req.body = value;
+      req.body = value; // Set the body of the request to the passed fields
+
       next();
     } catch (err: any) {
       const errors: string[] = [];
+
+      // Add all the validation error messages to errors array to be sent
       err.details.forEach((error: Joi.ValidationErrorItem) => {
         errors.push(error.message);
       });

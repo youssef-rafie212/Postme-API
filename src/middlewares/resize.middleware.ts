@@ -19,7 +19,7 @@ const resizeMiddleware = (width: number, heigth: number): RequestHandler => {
       }
 
       next();
-    } catch (err: any) {
+    } catch {
       next(new AppError("Error resizing the image", 500));
     }
   };

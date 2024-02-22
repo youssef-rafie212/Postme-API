@@ -35,7 +35,7 @@ class Email {
         subject,
         text,
       });
-    } catch (err: any) {
+    } catch {
       throw new Error(
         "Something wrong happened while sending the email , please try again"
       );

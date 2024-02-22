@@ -35,7 +35,7 @@ const authenticateMiddleware = async (
     req.user = user;
 
     next();
-  } catch (err) {
+  } catch {
     return next(new AppError("Unauthorized", 401));
   }
 };

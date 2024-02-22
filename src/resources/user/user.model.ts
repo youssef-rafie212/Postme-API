@@ -45,7 +45,6 @@ const UserSchema = new mongoose.Schema<User>({
   passwordResetTokenExpiresAt: Date,
 });
 
-// UserSchema methods
 UserSchema.methods.isCorrectPassword = async (
   password: string,
   storedPassword: string
@@ -69,7 +68,6 @@ UserSchema.methods.createPasswordResetToken =
     return resetToken;
   };
 
-// Middlewares
 UserSchema.pre<User>("save", async function (next) {
   if (!this.isModified("password")) return next();
 

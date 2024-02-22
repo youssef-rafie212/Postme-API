@@ -2,6 +2,11 @@ import multer from "multer";
 import { Request } from "express";
 import crypto from "crypto";
 
+/**
+ * Storing the files on the server temporary so the cloud middleware gets access to the file.path property
+ * Files will be deleted from the server after they are uploaded to the cloud
+ */
+
 const storage = multer.diskStorage({
   destination: (
     req: Request,

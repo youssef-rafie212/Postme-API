@@ -32,7 +32,7 @@ const cloudMiddleware = async (
     req.cloudinaryUrls = cloudinaryUrls;
 
     next();
-  } catch (err) {
+  } catch {
     next(new AppError("Error Uploading image to cloudinary", 500));
   }
 };
