@@ -34,6 +34,7 @@
 - Make sure to have accounts on (mongodb atlas , mailtrap , cloudinary)
 - Fork and clone the repo
 - Install all required dependencies in package.json file
+- After installing the dependencies the JS files will be built
 - Create a .env file and fill it with your information in this format :
 
   ```txt
