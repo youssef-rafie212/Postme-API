@@ -2,7 +2,6 @@ import PostModel from "./post.model";
 import Post from "./post.interface";
 import UserModel from "../../resources/user/user.model";
 import { Request } from "express";
-import mongoose from "mongoose";
 
 class PostService {
   private post = PostModel;
@@ -51,7 +50,7 @@ class PostService {
     updatedFields: {
       content?: string;
       photos?: string[];
-      creator?: mongoose.Types.ObjectId;
+      creator?: string;
     },
     req: Request
   ): Promise<Post> {
