@@ -46,6 +46,7 @@ class FollowController implements Controller {
       .get(authenticateMiddleware, this.getOne)
       .patch(
         authenticateMiddleware,
+        restrictMiddleware("admin"),
         validationMiddleware(validate.update),
         this.updateOne
       )
