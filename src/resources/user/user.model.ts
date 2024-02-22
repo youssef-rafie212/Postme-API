@@ -1,4 +1,4 @@
-import mongoose, { model } from "mongoose";
+import mongoose from "mongoose";
 import User from "./user.interface";
 import bcrypt from "bcrypt";
 import crypto from "crypto";
@@ -81,4 +81,4 @@ UserSchema.pre<User>("save", async function (next) {
   next();
 });
 
-export default model<User>("User", UserSchema);
+export default mongoose.model<User>("User", UserSchema);

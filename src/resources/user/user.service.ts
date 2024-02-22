@@ -133,7 +133,7 @@ class UserService {
   ): Promise<User> {
     // Check for file uploads
     if (req.cloudinaryUrls)
-      updatedFields["profilePicture"] = req.cloudinaryUrls;
+      updatedFields.profilePicture = req.cloudinaryUrls;
 
     try {
       const user = await this.user.findByIdAndUpdate(userId, updatedFields, {

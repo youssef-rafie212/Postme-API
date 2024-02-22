@@ -1,6 +1,7 @@
 import { v2 as cloudinary } from "cloudinary";
 import { Request, Response, NextFunction } from "express";
 import AppError from "../utils/errors/app.error";
+import fs from "fs";
 
 cloudinary.config({
   cloud_name: process.env.CLOUD_NAME,
@@ -23,6 +24,9 @@ const cloudMiddleware = async (
     for (let file of files) {
       const result = await cloudinary.uploader.upload(file.path);
       cloudinaryUrls.push(result.secure_url);
+
+      // Delete file from server after uploading it to the cloud
+      fs.unlinkSync(file.path);
     }
 
     req.cloudinaryUrls = cloudinaryUrls;

@@ -80,8 +80,8 @@ class UserController implements Controller {
       .get(authenticateMiddleware, this.getOne)
       .patch(
         authenticateMiddleware,
-        validationMiddleware(validate.update),
         uploadMiddleware.array("profilePicture", 1),
+        validationMiddleware(validate.update),
         resizeMiddleware(500, 500),
         cloudMiddleware,
         this.updateOne
