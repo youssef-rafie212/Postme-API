@@ -7,14 +7,7 @@ import mongoose from "mongoose";
 class PostService {
   private post = PostModel;
 
-  async createOne(
-    postBody: {
-      content: string;
-      photos?: string[];
-      creator: mongoose.Types.ObjectId;
-    },
-    req: Request
-  ): Promise<Post> {
+  async createOne(postBody: Post, req: Request): Promise<Post> {
     // Check for file uploads
     if (req.cloudinaryUrls) postBody.photos = req.cloudinaryUrls;
 
