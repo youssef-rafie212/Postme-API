@@ -5,13 +5,12 @@ interface User extends Document {
   password: string;
   passwordConfirm: string | undefined;
   email: string;
-  profilePicture: string;
+  profilePicture: string[];
   bio: string;
   role: string;
-  createdAt: number;
-  passwordChangedAt: number;
+  createdAt: Date;
   passwordResetToken: string;
-  passwordResetTokenExpiresAt: number;
+  passwordResetTokenExpiresAt: Date;
 
   isCorrectPassword(password: string, storedPassword: string): Promise<boolean>;
   createPasswordResetToken(): Promise<string>;

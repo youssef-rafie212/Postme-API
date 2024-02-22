@@ -14,7 +14,7 @@ const createToken = (user: User): string => {
   return token;
 };
 
-const verifyToken = (token: string): Promise<Token | jwt.VerifyErrors> => {
+const verifyToken = (token: string): Promise<Token | jwt.JsonWebTokenError> => {
   return new Promise((resolve, reject) => {
     jwt.verify(token, process.env.JWT_SECRET as jwt.Secret, (err, payload) => {
       if (err) return reject(err);

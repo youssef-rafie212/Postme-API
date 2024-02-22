@@ -3,7 +3,7 @@ import User from "./user.interface";
 import bcrypt from "bcrypt";
 import crypto from "crypto";
 
-const UserSchema = new mongoose.Schema({
+const UserSchema = new mongoose.Schema<User>({
   username: {
     type: String,
     required: true,
@@ -26,7 +26,7 @@ const UserSchema = new mongoose.Schema({
     required: true,
     unique: true,
   },
-  profilePicture: String,
+  profilePicture: [String],
   bio: {
     type: String,
     minLength: 3,
@@ -41,7 +41,6 @@ const UserSchema = new mongoose.Schema({
     type: Date,
     default: Date.now(),
   },
-  passwordChangedAt: Date,
   passwordResetToken: String,
   passwordResetTokenExpiresAt: Date,
 });
@@ -78,15 +77,6 @@ UserSchema.pre<User>("save", async function (next) {
 
   this.password = hashed;
   this.passwordConfirm = undefined;
-
-  next();
-});
-
-//// Update passwordChangedAt field if the user changed the password
-UserSchema.pre<User>("save", function (next) {
-  if (!this.isModified("password") || this.isNew) return next();
-
-  this.passwordChangedAt = Date.now() - 1000;
 
   next();
 });
