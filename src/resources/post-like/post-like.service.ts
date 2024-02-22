@@ -1,59 +1,58 @@
-import CommentModel from "./comment.model";
-import Comment from "./comment.interface";
+import PostLikeModel from "./post-like.model";
+import PostLike from "./post-like.interface";
 import UserModel from "../../resources/user/user.model";
 import PostModel from "../../resources/post/post.model";
 
-class CommentService {
-  private comment = CommentModel;
+class PostLikeService {
+  private postLike = PostLikeModel;
 
-  async createOne(commentBody: Comment): Promise<Comment> {
+  async createOne(postLikeBody: PostLike): Promise<PostLike> {
     try {
       // Check if the creator exists
-      const creator = await UserModel.findById(commentBody.creator);
+      const creator = await UserModel.findById(postLikeBody.creator);
       if (!creator) throw new Error("This creator doesn't exist");
 
       // Check if the post exists
-      const post = await PostModel.findById(commentBody.post);
+      const post = await PostModel.findById(postLikeBody.post);
       if (!post) throw new Error("This post doesn't exist");
 
-      const comment = await this.comment.create(commentBody);
+      const postLike = await this.postLike.create(postLikeBody);
 
-      return comment;
+      return postLike;
     } catch (err: any) {
       throw new Error(err.message);
     }
   }
 
-  async getOne(commentId: string): Promise<Comment> {
+  async getOne(postLikeId: string): Promise<PostLike> {
     try {
-      const comment = await this.comment.findById(commentId);
+      const postLike = await this.postLike.findById(postLikeId);
 
-      if (!comment) throw new Error("No comment found with this ID");
+      if (!postLike) throw new Error("No postLike found with this ID");
 
-      return comment;
+      return postLike;
     } catch (err: any) {
       throw new Error(err.message);
     }
   }
 
-  async getAll(): Promise<Comment[]> {
+  async getAll(): Promise<PostLike[]> {
     try {
-      const comments = await this.comment.find();
+      const postLikes = await this.postLike.find();
 
-      return comments;
+      return postLikes;
     } catch (err: any) {
       throw new Error(err.message);
     }
   }
 
   async updateOne(
-    commentId: string,
+    postLikeId: string,
     updatedFields: {
-      content?: string;
       creator?: string;
       post?: string;
     }
-  ): Promise<Comment> {
+  ): Promise<PostLike> {
     try {
       // Check if the creator exists
       if (updatedFields.creator) {
@@ -67,8 +66,8 @@ class CommentService {
         if (!post) throw new Error("This post doesn't exist");
       }
 
-      const comment = await this.comment.findByIdAndUpdate(
-        commentId,
+      const postLike = await this.postLike.findByIdAndUpdate(
+        postLikeId,
         updatedFields,
         {
           new: true,
@@ -76,19 +75,19 @@ class CommentService {
         }
       );
 
-      if (!comment) throw new Error("No Comment found with that ID");
+      if (!postLike) throw new Error("No postLike found with that ID");
 
-      return comment;
+      return postLike;
     } catch (err: any) {
       throw new Error(err.message);
     }
   }
 
-  async deleteOne(commentId: string): Promise<void> {
+  async deleteOne(postLikeId: string): Promise<void> {
     try {
-      const comment = await this.comment.findByIdAndDelete(commentId);
+      const postLike = await this.postLike.findByIdAndDelete(postLikeId);
 
-      if (!comment) throw new Error("No comment found with this ID");
+      if (!postLike) throw new Error("No postLike found with this ID");
     } catch (err: any) {
       throw new Error(err.message);
     }
@@ -96,11 +95,11 @@ class CommentService {
 
   async deleteAll(): Promise<void> {
     try {
-      await this.comment.deleteMany();
+      await this.postLike.deleteMany();
     } catch (err: any) {
       throw new Error(err.message);
     }
   }
 }
 
-export default CommentService;
+export default PostLikeService;
