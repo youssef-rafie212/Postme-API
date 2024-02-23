@@ -25,7 +25,7 @@ CommentSchema.pre(
   function (this: mongoose.Query<Comment, Comment>, next) {
     this.populate(["creator", "post"]);
     next();
-  }
+  },
 );
 
 export default mongoose.model<Comment>("Comment", CommentSchema);

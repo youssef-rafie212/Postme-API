@@ -8,7 +8,7 @@ const createToken = (user: User): string => {
     process.env.JWT_SECRET as jwt.Secret,
     {
       expiresIn: "30d",
-    }
+    },
   );
 
   return token;

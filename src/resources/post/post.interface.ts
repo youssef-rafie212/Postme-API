@@ -1,10 +1,10 @@
 import mongoose from "mongoose";
 
-interface Post extends mongoose.Document{
+interface Post extends mongoose.Document {
   content: string;
   photos?: string[];
   creator: mongoose.Types.ObjectId;
-  createdAt? : Date; 
+  createdAt?: Date;
 }
 
 export default Post;

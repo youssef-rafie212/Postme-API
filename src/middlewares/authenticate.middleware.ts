@@ -2,12 +2,13 @@ import UserModel from "../resources/user/user.model";
 import AppError from "../utils/errors/app.error";
 import token from "../utils/token";
 import { Request, Response, NextFunction } from "express";
+import CustomRequest from "../utils/definitions/request.definition";
 import jwt from "jsonwebtoken";
 
 const authenticateMiddleware = async (
   req: Request,
   res: Response,
-  next: NextFunction
+  next: NextFunction,
 ): Promise<void> => {
   let accessToken: string | undefined;
 
@@ -32,7 +33,7 @@ const authenticateMiddleware = async (
 
     if (!user) return next(new AppError("This user does't exist anymore", 401));
 
-    req.user = user;
+    (req as CustomRequest).user = user;
 
     next();
   } catch {

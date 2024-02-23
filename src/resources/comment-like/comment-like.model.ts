@@ -19,7 +19,7 @@ CommentLikeSchema.pre(
   function (this: mongoose.Query<CommentLike, CommentLike>, next) {
     this.populate(["creator", "comment"]);
     next();
-  }
+  },
 );
 
 export default mongoose.model<CommentLike>("CommentLike", CommentLikeSchema);

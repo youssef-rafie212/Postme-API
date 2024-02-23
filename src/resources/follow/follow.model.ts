@@ -19,7 +19,7 @@ FollowSchema.pre(
   function (this: mongoose.Query<Follow, Follow>, next) {
     this.populate(["follower", "followee"]);
     next();
-  }
+  },
 );
 
 export default mongoose.model<Follow>("Follow", FollowSchema);

@@ -65,7 +65,7 @@ class FollowService {
     updatedFields: {
       follower?: string;
       followee?: string;
-    }
+    },
   ): Promise<Follow> {
     try {
       // Check if the follower exists
@@ -86,7 +86,7 @@ class FollowService {
         {
           new: true,
           runValidators: true,
-        }
+        },
       );
 
       if (!follow) throw new Error("No follow found with that ID");

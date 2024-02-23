@@ -63,7 +63,7 @@ class CommentService {
       content?: string;
       creator?: string;
       post?: string;
-    }
+    },
   ): Promise<Comment> {
     try {
       // Check if the creator exists
@@ -84,7 +84,7 @@ class CommentService {
         {
           new: true,
           runValidators: true,
-        }
+        },
       );
 
       if (!comment) throw new Error("No Comment found with that ID");

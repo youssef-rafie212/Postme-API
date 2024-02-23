@@ -62,7 +62,7 @@ class PostLikeService {
     updatedFields: {
       creator?: string;
       post?: string;
-    }
+    },
   ): Promise<PostLike> {
     try {
       // Check if the creator exists
@@ -83,7 +83,7 @@ class PostLikeService {
         {
           new: true,
           runValidators: true,
-        }
+        },
       );
 
       if (!postLike) throw new Error("No postLike found with that ID");

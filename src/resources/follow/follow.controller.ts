@@ -32,17 +32,17 @@ class FollowController implements Controller {
       .post(
         authenticateMiddleware,
         validationMiddleware({ body: validate.createBody }),
-        this.createOne
+        this.createOne,
       )
       .get(
         authenticateMiddleware,
         validationMiddleware({ query: validate.getAllQuery }),
-        this.getAll
+        this.getAll,
       )
       .delete(
         authenticateMiddleware,
         restrictMiddleware("admin"),
-        this.deleteAll
+        this.deleteAll,
       );
 
     this.router
@@ -50,7 +50,7 @@ class FollowController implements Controller {
       .get(
         authenticateMiddleware,
         validationMiddleware({ params: validate.getOneParams }),
-        this.getOne
+        this.getOne,
       )
       .patch(
         authenticateMiddleware,
@@ -59,19 +59,19 @@ class FollowController implements Controller {
           body: validate.updateBody,
           params: validate.updateParams,
         }),
-        this.updateOne
+        this.updateOne,
       )
       .delete(
         authenticateMiddleware,
         validationMiddleware({ params: validate.deleteOneParams }),
-        this.deleteOne
+        this.deleteOne,
       );
   }
 
   private async createOne(
     req: Request,
     res: Response,
-    next: NextFunction
+    next: NextFunction,
   ): Promise<void> {
     const followBody = req.body;
 
@@ -92,7 +92,7 @@ class FollowController implements Controller {
   private async getOne(
     req: Request,
     res: Response,
-    next: NextFunction
+    next: NextFunction,
   ): Promise<void> {
     const id: string = req.params.id;
 
@@ -113,7 +113,7 @@ class FollowController implements Controller {
   private async getAll(
     req: Request,
     res: Response,
-    next: NextFunction
+    next: NextFunction,
   ): Promise<void> {
     try {
       const follows = await this.followService.getAll(req);
@@ -133,10 +133,10 @@ class FollowController implements Controller {
   private async updateOne(
     req: Request,
     res: Response,
-    next: NextFunction
+    next: NextFunction,
   ): Promise<void> {
     const id: string = req.params.id;
-    let updateBody = req.body;
+    const updateBody = req.body;
 
     try {
       const updatedFollow = await this.followService.updateOne(id, updateBody);
@@ -155,7 +155,7 @@ class FollowController implements Controller {
   private async deleteOne(
     req: Request,
     res: Response,
-    next: NextFunction
+    next: NextFunction,
   ): Promise<void> {
     const id: string = req.params.id;
 
@@ -174,7 +174,7 @@ class FollowController implements Controller {
   private async deleteAll(
     req: Request,
     res: Response,
-    next: NextFunction
+    next: NextFunction,
   ): Promise<void> {
     try {
       await this.followService.deleteAll();

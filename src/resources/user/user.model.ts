@@ -47,7 +47,7 @@ const UserSchema = new mongoose.Schema<User>({
 
 UserSchema.methods.isCorrectPassword = async (
   password: string,
-  storedPassword: string
+  storedPassword: string,
 ): Promise<boolean> => {
   return await bcrypt.compare(password, storedPassword);
 };

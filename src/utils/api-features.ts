@@ -1,10 +1,10 @@
 import { Query } from "mongoose";
 
 class APIFeatures {
-  public query: Query<any , any>;
-  public queryString: Record<string , any>;
+  public query: Query<any, any>;
+  public queryString: Record<string, any>;
 
-  constructor(query: Query<any , any>, queryString: Record<string , any>) {
+  constructor(query: Query<any, any>, queryString: Record<string, any>) {
     this.query = query;
     this.queryString = queryString;
   }

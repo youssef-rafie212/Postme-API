@@ -6,7 +6,7 @@ const validationMiddleware = (schemas: ValidationSchemas): RequestHandler => {
   return async (
     req: Request,
     res: Response,
-    next: NextFunction
+    next: NextFunction,
   ): Promise<void> => {
     const options = {
       abortEarly: false,
@@ -17,17 +17,21 @@ const validationMiddleware = (schemas: ValidationSchemas): RequestHandler => {
 
       // Body validation
       if (schemas.body) {
-        validationPromises.push(schemas.body.validateAsync(req.body , options));
+        validationPromises.push(schemas.body.validateAsync(req.body, options));
       }
 
       // Query Validation
       if (schemas.query) {
-        validationPromises.push(schemas.query.validateAsync(req.query , options));
+        validationPromises.push(
+          schemas.query.validateAsync(req.query, options),
+        );
       }
 
       // Params Validation
       if (schemas.params) {
-        validationPromises.push(schemas.params.validateAsync(req.params , options));
+        validationPromises.push(
+          schemas.params.validateAsync(req.params, options),
+        );
       }
 
       await Promise.all(validationPromises);

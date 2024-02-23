@@ -1,5 +1,6 @@
 import Controller from "utils/interfaces/controller.interface";
 import { Router, Request, Response, NextFunction } from "express";
+import CustomRequest from "utils/definitions/request.definition";
 import validationMiddleware from "../../middlewares/validation.middleware";
 import * as validate from "./post.validation";
 import AppError from "../../utils/errors/app.error";
@@ -38,17 +39,17 @@ class PostController implements Controller {
         validationMiddleware({ body: validate.createBody }),
         resizeMiddleware(2000, 2000),
         cloudMiddleware,
-        this.createOne
+        this.createOne,
       )
       .get(
         authenticateMiddleware,
         validationMiddleware({ query: validate.getAllQuery }),
-        this.getAll
+        this.getAll,
       )
       .delete(
         authenticateMiddleware,
         restrictMiddleware("admin"),
-        this.deleteAll
+        this.deleteAll,
       );
 
     this.router
@@ -56,7 +57,7 @@ class PostController implements Controller {
       .get(
         authenticateMiddleware,
         validationMiddleware({ params: validate.getOneParams }),
-        this.getOne
+        this.getOne,
       )
       .patch(
         authenticateMiddleware,
@@ -67,24 +68,27 @@ class PostController implements Controller {
         }),
         resizeMiddleware(2000, 2000),
         cloudMiddleware,
-        this.updateOne
+        this.updateOne,
       )
       .delete(
         authenticateMiddleware,
         validationMiddleware({ params: validate.deleteOneParams }),
-        this.deleteOne
+        this.deleteOne,
       );
   }
 
   private async createOne(
     req: Request,
     res: Response,
-    next: NextFunction
+    next: NextFunction,
   ): Promise<void> {
     const postBody = req.body;
 
     try {
-      const post = await this.postService.createOne(postBody, req);
+      const post = await this.postService.createOne(
+        postBody,
+        req as CustomRequest,
+      );
 
       res.status(201).json({
         message: "success",
@@ -100,7 +104,7 @@ class PostController implements Controller {
   private async getOne(
     req: Request,
     res: Response,
-    next: NextFunction
+    next: NextFunction,
   ): Promise<void> {
     const id: string = req.params.id;
 
@@ -121,7 +125,7 @@ class PostController implements Controller {
   private async getAll(
     req: Request,
     res: Response,
-    next: NextFunction
+    next: NextFunction,
   ): Promise<void> {
     try {
       const posts = await this.postService.getAll(req);
@@ -141,13 +145,17 @@ class PostController implements Controller {
   private async updateOne(
     req: Request,
     res: Response,
-    next: NextFunction
+    next: NextFunction,
   ): Promise<void> {
     const id: string = req.params.id;
-    let updateBody = req.body;
+    const updateBody = req.body;
 
     try {
-      const updatedPost = await this.postService.updateOne(id, updateBody, req);
+      const updatedPost = await this.postService.updateOne(
+        id,
+        updateBody,
+        req as CustomRequest,
+      );
 
       res.status(200).json({
         message: "success",
@@ -163,7 +171,7 @@ class PostController implements Controller {
   private async deleteOne(
     req: Request,
     res: Response,
-    next: NextFunction
+    next: NextFunction,
   ): Promise<void> {
     const id: string = req.params.id;
 
@@ -182,7 +190,7 @@ class PostController implements Controller {
   private async deleteAll(
     req: Request,
     res: Response,
-    next: NextFunction
+    next: NextFunction,
   ): Promise<void> {
     try {
       await this.postService.deleteAll();

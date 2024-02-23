@@ -2,6 +2,7 @@ import UserModel from "./user.model";
 import token from "../../utils/token";
 import User from "./user.interface";
 import { Request } from "express";
+import CustomRequest from "../../utils/definitions/request.definition";
 import Email from "../../utils/email";
 import crypo from "crypto";
 import APIFeatures from "../../utils/api-features";
@@ -13,7 +14,7 @@ class UserService {
     username: string,
     email: string,
     password: string,
-    passwordConfirm: string
+    passwordConfirm: string,
   ): Promise<{ accessToken: string; user: User }> {
     try {
       const user = await this.user.create({
@@ -33,7 +34,7 @@ class UserService {
 
   async login(
     email: string,
-    password: string
+    password: string,
   ): Promise<{ accessToken: string; user: User }> {
     try {
       const user = await this.user.findOne({ email }).select("+password");
@@ -60,7 +61,7 @@ class UserService {
       const token = await user.createPasswordResetToken();
 
       const url = `${req.protocol}://${req.get(
-        "host"
+        "host",
       )}/api/v1/resetPassword/${token}`;
 
       const emailSender = new Email(process.env.EMAIL ?? "", email);
@@ -73,7 +74,7 @@ class UserService {
   async resetPassword(
     resetToken: string,
     newPassword: string,
-    newPasswordConfirm: string
+    newPasswordConfirm: string,
   ): Promise<{ accessToken: string; user: User }> {
     try {
       const hashedToken = crypo
@@ -139,7 +140,7 @@ class UserService {
       bio?: string;
       profilePicture?: string[];
     },
-    req: Request
+    req: CustomRequest,
   ): Promise<User> {
     // Check for file uploads
     if (req.cloudinaryUrls) updatedFields.profilePicture = req.cloudinaryUrls;

@@ -1,5 +1,6 @@
 import { v2 as cloudinary } from "cloudinary";
 import { Request, Response, NextFunction } from "express";
+import CustomRequest from "../utils/definitions/request.definition";
 import AppError from "../utils/errors/app.error";
 import fs from "fs";
 
@@ -12,7 +13,7 @@ cloudinary.config({
 const cloudMiddleware = async (
   req: Request,
   res: Response,
-  next: NextFunction
+  next: NextFunction,
 ): Promise<void> => {
   const files = req.files as Express.Multer.File[];
 
@@ -21,7 +22,7 @@ const cloudMiddleware = async (
   try {
     const cloudinaryUrls: string[] = [];
 
-    for (let file of files) {
+    for (const file of files) {
       const result = await cloudinary.uploader.upload(file.path);
       cloudinaryUrls.push(result.secure_url);
 
@@ -29,7 +30,7 @@ const cloudMiddleware = async (
       fs.unlinkSync(file.path);
     }
 
-    req.cloudinaryUrls = cloudinaryUrls;
+    (req as CustomRequest).cloudinaryUrls = cloudinaryUrls;
 
     next();
   } catch {

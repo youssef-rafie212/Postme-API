@@ -19,7 +19,7 @@ PostLikeSchema.pre(
   function (this: mongoose.Query<PostLike, PostLike>, next) {
     this.populate(["creator", "post"]);
     next();
-  }
+  },
 );
 
 export default mongoose.model<PostLike>("PostLike", PostLikeSchema);

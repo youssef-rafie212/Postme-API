@@ -6,14 +6,14 @@ const resizeMiddleware = (width: number, heigth: number): RequestHandler => {
   return async (
     req: Request,
     res: Response,
-    next: NextFunction
+    next: NextFunction,
   ): Promise<void> => {
     const files = req.files as Express.Multer.File[];
 
     if (!files || files.length == 0) return next();
-    
+
     try {
-      for (let file of files) {
+      for (const file of files) {
         const image = await Jimp.read(file.path);
         image.resize(width, heigth).quality(80).write(file.path);
       }

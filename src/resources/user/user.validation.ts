@@ -34,13 +34,11 @@ export const resetPasswordBody = Joi.object({
 });
 
 export const resetPasswordParams = Joi.object({
-  resetToken: Joi.string().required()
-})
+  resetToken: Joi.string().required(),
+});
 
 export const getAllQuery = queryValidationSchmea;
 
 export const getOneParams = paramsValidationSchmea;
 
 export const deleteOneParams = paramsValidationSchmea;
-
-

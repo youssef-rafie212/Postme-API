@@ -32,17 +32,17 @@ class PostLikeController implements Controller {
       .post(
         authenticateMiddleware,
         validationMiddleware({ body: validate.createBody }),
-        this.createOne
+        this.createOne,
       )
       .get(
         authenticateMiddleware,
         validationMiddleware({ query: validate.getAllQuery }),
-        this.getAll
+        this.getAll,
       )
       .delete(
         authenticateMiddleware,
         restrictMiddleware("admin"),
-        this.deleteAll
+        this.deleteAll,
       );
 
     this.router
@@ -50,7 +50,7 @@ class PostLikeController implements Controller {
       .get(
         authenticateMiddleware,
         validationMiddleware({ params: validate.getOneParams }),
-        this.getOne
+        this.getOne,
       )
       .patch(
         authenticateMiddleware,
@@ -58,19 +58,19 @@ class PostLikeController implements Controller {
           body: validate.updateBody,
           params: validate.updateParams,
         }),
-        this.updateOne
+        this.updateOne,
       )
       .delete(
         authenticateMiddleware,
         validationMiddleware({ params: validate.deleteOneParams }),
-        this.deleteOne
+        this.deleteOne,
       );
   }
 
   private async createOne(
     req: Request,
     res: Response,
-    next: NextFunction
+    next: NextFunction,
   ): Promise<void> {
     const postLikeBody = req.body;
 
@@ -91,7 +91,7 @@ class PostLikeController implements Controller {
   private async getOne(
     req: Request,
     res: Response,
-    next: NextFunction
+    next: NextFunction,
   ): Promise<void> {
     const id: string = req.params.id;
 
@@ -112,7 +112,7 @@ class PostLikeController implements Controller {
   private async getAll(
     req: Request,
     res: Response,
-    next: NextFunction
+    next: NextFunction,
   ): Promise<void> {
     try {
       const postLikes = await this.postLikeService.getAll(req);
@@ -132,15 +132,15 @@ class PostLikeController implements Controller {
   private async updateOne(
     req: Request,
     res: Response,
-    next: NextFunction
+    next: NextFunction,
   ): Promise<void> {
     const id: string = req.params.id;
-    let updateBody = req.body;
+    const updateBody = req.body;
 
     try {
       const updatedPostLike = await this.postLikeService.updateOne(
         id,
-        updateBody
+        updateBody,
       );
 
       res.status(200).json({
@@ -157,7 +157,7 @@ class PostLikeController implements Controller {
   private async deleteOne(
     req: Request,
     res: Response,
-    next: NextFunction
+    next: NextFunction,
   ): Promise<void> {
     const id: string = req.params.id;
 
@@ -176,7 +176,7 @@ class PostLikeController implements Controller {
   private async deleteAll(
     req: Request,
     res: Response,
-    next: NextFunction
+    next: NextFunction,
   ): Promise<void> {
     try {
       await this.postLikeService.deleteAll();

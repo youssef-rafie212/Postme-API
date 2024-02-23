@@ -62,7 +62,7 @@ class CommentLikeService {
     updatedFields: {
       creator?: string;
       comment?: string;
-    }
+    },
   ): Promise<CommentLike> {
     try {
       // Check if the creator exists
@@ -83,7 +83,7 @@ class CommentLikeService {
         {
           new: true,
           runValidators: true,
-        }
+        },
       );
 
       if (!commentLike) throw new Error("No commentLike found with that ID");
@@ -96,7 +96,8 @@ class CommentLikeService {
 
   async deleteOne(commentLikeId: string): Promise<void> {
     try {
-      const commentLike = await this.commentLike.findByIdAndDelete(commentLikeId);
+      const commentLike =
+        await this.commentLike.findByIdAndDelete(commentLikeId);
 
       if (!commentLike) throw new Error("No commentLike found with this ID");
     } catch (err: any) {

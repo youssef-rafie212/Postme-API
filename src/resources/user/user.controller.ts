@@ -1,6 +1,7 @@
 import Controller from "utils/interfaces/controller.interface";
 import UserService from "./user.service";
 import { Router, Request, Response, NextFunction } from "express";
+import CustomRequest from "utils/definitions/request.definition";
 import validationMiddleware from "../../middlewares/validation.middleware";
 import * as validate from "./user.validation";
 import AppError from "../../utils/errors/app.error";
@@ -37,25 +38,25 @@ class UserController implements Controller {
     this.router.post(
       `${this.path}/signup`,
       validationMiddleware({ body: validate.createBody }),
-      this.signup
+      this.signup,
     );
 
     this.router.post(
       `${this.path}/login`,
       validationMiddleware({ body: validate.loginBody }),
-      this.login
+      this.login,
     );
 
     this.router.post(
       `${this.path}/logout`,
       authenticateMiddleware,
-      this.logout
+      this.logout,
     );
 
     this.router.post(
       `${this.path}/forgotPassword`,
       validationMiddleware({ body: validate.forgotPasswordBody }),
-      this.forgotPassword
+      this.forgotPassword,
     );
 
     this.router.patch(
@@ -64,7 +65,7 @@ class UserController implements Controller {
         body: validate.resetPasswordBody,
         params: validate.resetPasswordParams,
       }),
-      this.resetPassword
+      this.resetPassword,
     );
 
     this.router.get(`${this.path}/me`, authenticateMiddleware, this.getMe);
@@ -75,12 +76,12 @@ class UserController implements Controller {
         authenticateMiddleware,
         restrictMiddleware("admin"),
         validationMiddleware({ query: validate.getAllQuery }),
-        this.getAll
+        this.getAll,
       )
       .delete(
         authenticateMiddleware,
         restrictMiddleware("admin"),
-        this.deleteAll
+        this.deleteAll,
       );
 
     this.router
@@ -88,7 +89,7 @@ class UserController implements Controller {
       .get(
         authenticateMiddleware,
         validationMiddleware({ params: validate.getOneParams }),
-        this.getOne
+        this.getOne,
       )
       .patch(
         authenticateMiddleware,
@@ -99,19 +100,19 @@ class UserController implements Controller {
         }),
         resizeMiddleware(500, 500),
         cloudMiddleware,
-        this.updateOne
+        this.updateOne,
       )
       .delete(
         authenticateMiddleware,
         validationMiddleware({ params: validate.deleteOneParams }),
-        this.deleteOne
+        this.deleteOne,
       );
   }
 
   private async signup(
     req: Request,
     res: Response,
-    next: NextFunction
+    next: NextFunction,
   ): Promise<void> {
     const { username, email, password, passwordConfirm } = req.body;
 
@@ -120,7 +121,7 @@ class UserController implements Controller {
         username,
         email,
         password,
-        passwordConfirm
+        passwordConfirm,
       );
 
       res.cookie("jwt", accessToken, {
@@ -143,14 +144,14 @@ class UserController implements Controller {
   private async login(
     req: Request,
     res: Response,
-    next: NextFunction
+    next: NextFunction,
   ): Promise<void> {
     const { email, password } = req.body;
 
     try {
       const { accessToken, user } = await this.userService.login(
         email,
-        password
+        password,
       );
 
       res.cookie("jwt", accessToken, {
@@ -170,7 +171,7 @@ class UserController implements Controller {
     }
   }
 
-  private logout(req: Request, res: Response, next: NextFunction): void {
+  private logout(req: Request, res: Response): void {
     res.cookie("jwt", "logout", {
       httpOnly: true,
       secure: process.env.NODE_ENV == "development" ? false : true,
@@ -185,7 +186,7 @@ class UserController implements Controller {
   private async forgotPassword(
     req: Request,
     res: Response,
-    next: NextFunction
+    next: NextFunction,
   ): Promise<void> {
     const { email } = req.body;
 
@@ -204,7 +205,7 @@ class UserController implements Controller {
   private async resetPassword(
     req: Request,
     res: Response,
-    next: NextFunction
+    next: NextFunction,
   ): Promise<void> {
     const { newPassword, newPasswordConfirm } = req.body;
     const resetToken = req.params.resetToken;
@@ -213,7 +214,7 @@ class UserController implements Controller {
       const { accessToken, user } = await this.userService.resetPassword(
         resetToken,
         newPassword,
-        newPasswordConfirm
+        newPasswordConfirm,
       );
 
       res.cookie("jwt", accessToken, {
@@ -236,10 +237,12 @@ class UserController implements Controller {
   private async getMe(
     req: Request,
     res: Response,
-    next: NextFunction
+    next: NextFunction,
   ): Promise<void> {
     try {
-      const user = await this.userService.getOne(req.user.id);
+      const user = await this.userService.getOne(
+        (req as CustomRequest).user.id,
+      );
 
       res.status(200).json({
         message: "success",
@@ -255,7 +258,7 @@ class UserController implements Controller {
   private async getOne(
     req: Request,
     res: Response,
-    next: NextFunction
+    next: NextFunction,
   ): Promise<void> {
     const id: string = req.params.id;
 
@@ -276,7 +279,7 @@ class UserController implements Controller {
   private async getAll(
     req: Request,
     res: Response,
-    next: NextFunction
+    next: NextFunction,
   ): Promise<void> {
     try {
       const users = await this.userService.getAll(req);
@@ -296,13 +299,17 @@ class UserController implements Controller {
   private async updateOne(
     req: Request,
     res: Response,
-    next: NextFunction
+    next: NextFunction,
   ): Promise<void> {
     const id: string = req.params.id;
-    let updateBody = req.body;
+    const updateBody = req.body;
 
     try {
-      const updatedUser = await this.userService.updateOne(id, updateBody, req);
+      const updatedUser = await this.userService.updateOne(
+        id,
+        updateBody,
+        req as CustomRequest,
+      );
 
       res.status(200).json({
         message: "success",
@@ -318,7 +325,7 @@ class UserController implements Controller {
   private async deleteOne(
     req: Request,
     res: Response,
-    next: NextFunction
+    next: NextFunction,
   ): Promise<void> {
     const id: string = req.params.id;
 
@@ -337,7 +344,7 @@ class UserController implements Controller {
   private async deleteAll(
     req: Request,
     res: Response,
-    next: NextFunction
+    next: NextFunction,
   ): Promise<void> {
     try {
       await this.userService.deleteAll();
