@@ -8,7 +8,6 @@ const restrictMiddleware = (...roles: string[]): RequestHandler => {
       return next(
         new AppError("You don't have the permission to access this route", 401),
       );
-
     next();
   };
 };
