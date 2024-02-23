@@ -1,5 +1,5 @@
 import Controller from "utils/interfaces/controller.interface";
-import { Router, Request, Response, NextFunction } from "express";
+import { Router, Request, Response, NextFunction, query } from "express";
 import validationMiddleware from "../../middlewares/validation.middleware";
 import * as validate from "./comment.validation";
 import AppError from "../../utils/errors/app.error";
@@ -31,10 +31,14 @@ class CommentController implements Controller {
       .route(`${this.path}/`)
       .post(
         authenticateMiddleware,
-        validationMiddleware(validate.create),
+        validationMiddleware({ body: validate.createBody }),
         this.createOne
       )
-      .get(authenticateMiddleware, this.getAll)
+      .get(
+        authenticateMiddleware,
+        validationMiddleware({ query: validate.getAllQuery }),
+        this.getAll
+      )
       .delete(
         authenticateMiddleware,
         restrictMiddleware("admin"),
@@ -43,13 +47,24 @@ class CommentController implements Controller {
 
     this.router
       .route(`${this.path}/:id`)
-      .get(authenticateMiddleware, this.getOne)
+      .get(
+        authenticateMiddleware,
+        validationMiddleware({ params: validate.getOneParams }),
+        this.getOne
+      )
       .patch(
         authenticateMiddleware,
-        validationMiddleware(validate.update),
+        validationMiddleware({
+          body: validate.updateBody,
+          params: validate.updateParams,
+        }),
         this.updateOne
       )
-      .delete(authenticateMiddleware, this.deleteOne);
+      .delete(
+        authenticateMiddleware,
+        validationMiddleware({ params: validate.deleteOneParams }),
+        this.deleteOne
+      );
   }
 
   private async createOne(

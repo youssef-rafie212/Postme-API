@@ -35,12 +35,16 @@ class PostController implements Controller {
       .post(
         authenticateMiddleware,
         uploadMiddleware.array("photos", 5),
-        validationMiddleware(validate.create),
+        validationMiddleware({ body: validate.createBody }),
         resizeMiddleware(2000, 2000),
         cloudMiddleware,
         this.createOne
       )
-      .get(authenticateMiddleware, this.getAll)
+      .get(
+        authenticateMiddleware,
+        validationMiddleware({ query: validate.getAllQuery }),
+        this.getAll
+      )
       .delete(
         authenticateMiddleware,
         restrictMiddleware("admin"),
@@ -49,16 +53,27 @@ class PostController implements Controller {
 
     this.router
       .route(`${this.path}/:id`)
-      .get(authenticateMiddleware, this.getOne)
+      .get(
+        authenticateMiddleware,
+        validationMiddleware({ params: validate.getOneParams }),
+        this.getOne
+      )
       .patch(
         authenticateMiddleware,
         uploadMiddleware.array("photos", 5),
-        validationMiddleware(validate.update),
+        validationMiddleware({
+          body: validate.updateBody,
+          params: validate.updateParams,
+        }),
         resizeMiddleware(2000, 2000),
         cloudMiddleware,
         this.updateOne
       )
-      .delete(authenticateMiddleware, this.deleteOne);
+      .delete(
+        authenticateMiddleware,
+        validationMiddleware({ params: validate.deleteOneParams }),
+        this.deleteOne
+      );
   }
 
   private async createOne(

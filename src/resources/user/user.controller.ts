@@ -36,13 +36,13 @@ class UserController implements Controller {
   private initializeRoutes(): void {
     this.router.post(
       `${this.path}/signup`,
-      validationMiddleware(validate.create),
+      validationMiddleware({ body: validate.createBody }),
       this.signup
     );
 
     this.router.post(
       `${this.path}/login`,
-      validationMiddleware(validate.login),
+      validationMiddleware({ body: validate.loginBody }),
       this.login
     );
 
@@ -54,13 +54,16 @@ class UserController implements Controller {
 
     this.router.post(
       `${this.path}/forgotPassword`,
-      validationMiddleware(validate.forgotPassword),
+      validationMiddleware({ body: validate.forgotPasswordBody }),
       this.forgotPassword
     );
 
     this.router.patch(
       `${this.path}/resetPassword/:resetToken`,
-      validationMiddleware(validate.resetPassword),
+      validationMiddleware({
+        body: validate.resetPasswordBody,
+        params: validate.resetPasswordParams,
+      }),
       this.resetPassword
     );
 
@@ -68,7 +71,12 @@ class UserController implements Controller {
 
     this.router
       .route(`${this.path}/`)
-      .get(authenticateMiddleware, restrictMiddleware("admin"), this.getAll)
+      .get(
+        authenticateMiddleware,
+        restrictMiddleware("admin"),
+        validationMiddleware({ query: validate.getAllQuery }),
+        this.getAll
+      )
       .delete(
         authenticateMiddleware,
         restrictMiddleware("admin"),
@@ -77,16 +85,27 @@ class UserController implements Controller {
 
     this.router
       .route(`${this.path}/:id`)
-      .get(authenticateMiddleware, this.getOne)
+      .get(
+        authenticateMiddleware,
+        validationMiddleware({ params: validate.getOneParams }),
+        this.getOne
+      )
       .patch(
         authenticateMiddleware,
         uploadMiddleware.array("profilePicture", 1),
-        validationMiddleware(validate.update),
+        validationMiddleware({
+          body: validate.updateBody,
+          params: validate.updateParams,
+        }),
         resizeMiddleware(500, 500),
         cloudMiddleware,
         this.updateOne
       )
-      .delete(authenticateMiddleware, this.deleteOne);
+      .delete(
+        authenticateMiddleware,
+        validationMiddleware({ params: validate.deleteOneParams }),
+        this.deleteOne
+      );
   }
 
   private async signup(
